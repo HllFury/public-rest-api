@@ -1,0 +1,49 @@
+pipeline {
+  environment {
+    registry = "hllfury/node-express"
+    dockerImage = ''
+    DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+  }
+  agent any
+  tools {nodejs "node" }
+  stages {
+    stage('Cloning Git') {
+      steps {
+        git branch: 'develop', url: 'https://github.com/HllFury/public-rest-api'
+      }
+    }
+    stage('Build') {
+       steps {
+         sh 'npm install'
+       }
+    }
+    stage('Test') {
+      steps {
+        sh 'npm test'
+      }
+    }
+    stage('Building image') {
+      steps{
+          sh 'docker build -t hllfury/node-express .'
+        }
+    }
+    stage('Deploy Image') {
+      steps{ 
+            sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            sh 'docker push lloydmatereke/jenkins-docker-hub'
+      }
+    }
+    stage('Deploy Manfest Files') {
+        steps{
+            script {
+          kubernetesDeploy(configs: "deploymentService.yaml")
+            }
+        }
+    }
+  }
+    post {
+    always {
+      sh 'docker logout'
+    }
+  }
+}
