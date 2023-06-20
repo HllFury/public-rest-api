@@ -15,7 +15,7 @@
     "fastify": "^4.18.0"
   },
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "node app/index.js",
     "test": "jest"
   },
   "type": "module"
