@@ -2,7 +2,7 @@ trigger:
   - develop
 
 pool:
-    vmImage: 'demo-pool'
+    name: 'demo-pool'
 
 stages:
   - stage: BuildApp
