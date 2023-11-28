@@ -1,8 +1,18 @@
-# Docker
-- task: SSH@0
-  inputs:
-    runOptions: 'commands'
-    commands: |
-      yarn install
-      yarn start
-    readyTimeout: '20000'
+trigger:
+  - develop
+
+pool:
+    vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: Build the Application
+    jobs:
+      - job: Build
+        steps:
+        - task: Bash@3
+          inputs:
+            targetType: 'inline'
+            script: |
+              # Write your commands here
+              
+              echo 'Hello world'
